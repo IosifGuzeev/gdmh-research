@@ -73,3 +73,18 @@ stages:
     - pipeline/4_find_metrics_destribution.py
     outs:
     - data/analysis/analysis.csv
+  find_statistics:
+    cmd: python pipeline/4_2_check_statistics.py --input data/metrics.csv --output data/analysis
+    deps:
+    - data/metrics.csv
+    - pipeline/4_2_check_statistics.py
+    outs:
+    - data/analysis/statistics.csv
+  build_charts:
+    cmd: python pipeline/5_create_charts.py --input data/analysis/analysis.csv --output
+      data/analysis/charts
+    deps:
+    - data/analysis/analysis.csv
+    - pipeline/5_create_charts.py
+    outs:
+    - data/analysis/charts
