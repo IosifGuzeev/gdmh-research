@@ -38,9 +38,13 @@ def main():
         data.to_csv(output / dataset_name, index=False)
 
     for law in get_laws(args.laws):
-        data = np.random.uniform(0, 1, (params['generate_data']['sample_size'], 10))
+        data = np.random.uniform(0, 1, (params['generate_data']['sample_size'] + 2000, 10))
+        y = law[1](data)
+        arg_sorted = np.argsort(y)
+        data = data[arg_sorted][2000:]
+        y = y[arg_sorted][2000:]
         data = pd.DataFrame(data=data, columns=list(f"X_{i}" for i in range(data.shape[1])))
-        data['Y'] = law[1](data.values)
+        data['Y'] = y
         data.to_csv(output / f"{law[0]}.csv", index=False)
 
 

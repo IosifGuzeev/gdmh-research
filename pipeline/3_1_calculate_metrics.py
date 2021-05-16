@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Load datasets from given l')
+    parser = argparse.ArgumentParser(description="Calculates metric values for each model and subsets it's attached to")
     parser.add_argument('--input', type=str, help='Path to catalog with models and datasets information')
     parser.add_argument('--output', type=str, help="Output file location")
     args = parser.parse_args()

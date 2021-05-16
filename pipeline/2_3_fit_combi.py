@@ -9,7 +9,7 @@ from models.COMBI import COMBI
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Load datasets from given links and fit linear regression models')
+    parser = argparse.ArgumentParser(description='Load datasets from given links and fit COMBI models')
     parser.add_argument('--catalog', type=str, help='Path to catalog with datasets information')
     parser.add_argument('--output', type=str, help="Output folder location")
     args = parser.parse_args()
@@ -22,7 +22,6 @@ def main():
 
     train_info = []
     for row in tqdm(catalog.itertuples(), desc="Models fitted:"):
-        print(row)
         train_data = pd.read_csv(row.train_path)
         model = COMBI().fit(train_data.drop(columns=['Y']), train_data['Y'])
         train_info.append({

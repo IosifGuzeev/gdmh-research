@@ -23,8 +23,8 @@ def make_plot(data, target_metric, output_folder, title=None, y_lim=(0.0, 1.0)):
     )
     plt.plot([0], [0], color='red')
     plt.legend([
-        'Upper deviation',
         'Inferior deviation',
+        'Upper deviation',
         'Mean value'
     ][::-1])
     for i in range(data.shape[0]):

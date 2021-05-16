@@ -22,7 +22,7 @@ stages:
     cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
       --output data/models/linear_regression
     deps:
-    - data/splited_data/catalog.csv
+    - data/splited_data
     - pipeline/2_1_fit_linear_regression.py
     outs:
     - data/models/linear_regression
@@ -37,15 +37,15 @@ stages:
     cmd: python pipeline/2_2_fit_svm.py --catalog data/splited_data/catalog.csv --output
       data/models/svm
     deps:
-    - data/splited_data/catalog.csv
+    - data/splited_data
     - pipeline/2_2_fit_svm.py
     outs:
     - data/models/svm
   fit_combi:
-    cmd: python pipeline/2_3_fit_combi.py --catalog data/splited_data/catalog.csv --output
-      data/models/combi
+    cmd: python pipeline/2_3_fit_combi.py --catalog data/splited_data/catalog.csv
+      --output data/models/combi
     deps:
-    - data/splited_data/catalog.csv
+    - data/splited_data
     - pipeline/2_3_fit_combi.py
     outs:
     - data/models/combi
@@ -53,15 +53,23 @@ stages:
     cmd: python pipeline/2_4_fit_mia.py --catalog data/splited_data/catalog.csv --output
       data/models/mia
     deps:
-    - data/splited_data/catalog.csv
+    - data/splited_data
     - pipeline/2_4_fit_mia.py
     outs:
     - data/models/mia
   fit_kandos_nn:
-    cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv --output
-      data/models/kandos_nn
+    cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv
+      --output data/models/kandos_nn
     deps:
-    - data/splited_data/catalog.csv
+    - data/splited_data
     - pipeline/2_5_fit_kandos_nn.py
     outs:
     - data/models/kandos_nn
+  find_metrics_distribution:
+    cmd: python pipeline/4_find_metrics_destribution.py --input data/metrics.csv --output
+      data/analysis/
+    deps:
+    - data/metrics.csv
+    - pipeline/4_find_metrics_destribution.py
+    outs:
+    - data/analysis/analysis.csv

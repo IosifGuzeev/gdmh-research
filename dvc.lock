@@ -5,22 +5,22 @@ stages:
       --target-columns medv --laws simple_poly exp irrational_poly --output data/raw_data
     deps:
     - path: pipeline/0_data_creation.py
-      md5: 3b6ba50db379c9de7cf14e56125495b4
-      size: 1983
+      md5: 548653bc10a98555a628746f5ab7f7d6
+      size: 2104
     params:
       params.yaml:
         generate_data.sample_size: 30000
     outs:
     - path: data/raw_data
-      md5: 69da3f78d96ec4bffddf97adb184ad7b.dir
-      size: 19143453
+      md5: 9c5afc0bc7d3243e8501773586217c0f.dir
+      size: 19134276
       nfiles: 4
   split_data:
     cmd: python pipeline/1_split_data.py --input data/raw_data --output data/splited_data
     deps:
     - path: data/raw_data
-      md5: 69da3f78d96ec4bffddf97adb184ad7b.dir
-      size: 19143453
+      md5: 9c5afc0bc7d3243e8501773586217c0f.dir
+      size: 19134276
       nfiles: 4
     - path: pipeline/1_split_data.py
       md5: 3a571749c9adcc1237cb1353047b864a
@@ -31,8 +31,8 @@ stages:
         split_data.train_size: 0.8
     outs:
     - path: data/splited_data
-      md5: a242e84dfdea5027b9a54411984be008.dir
-      size: 94785000
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
       nfiles: 41
   fir_linear_regression:
     cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
@@ -49,88 +49,107 @@ stages:
     cmd: python pipeline/3_1_calculate_metrics.py --input data/models --output data/metrics.csv
     deps:
     - path: data/models
-      md5: f190ff0d6296d7911067bf0a28b6f8a9.dir
-      size: 529689
+      md5: 54c10f3a663f76b5e4feedb8671448ec.dir
+      size: 559479
       nfiles: 106
     - path: pipeline/3_1_calculate_metrics.py
       md5: 2543769e98f4def7f8cb174668b3e8ea
       size: 2207
     outs:
     - path: data/metrics.csv
-      md5: 7d345cb66f9bf16a607c5d96ea48cc74
-      size: 27891
+      md5: 9df6ce5f5960ddc5ed10639c3a51259d
+      size: 27931
   fit_svm:
     cmd: python pipeline/2_2_fit_svm.py --catalog data/splited_data/catalog.csv --output
       data/models/svm
     deps:
-    - path: data/splited_data/catalog.csv
-      md5: c4ae24df8d45b7c932c6bfb83373ad95
-      size: 2387
+    - path: data/splited_data
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
+      nfiles: 41
     - path: pipeline/2_2_fit_svm.py
       md5: 9e946fa99b7843bc9766419b2e279e30
       size: 1248
     outs:
     - path: data/models/svm
-      md5: ec2cc5d2a3de16564c4be62763181fe0.dir
-      size: 357585
+      md5: 17d89f576980b9194162e735918893e0.dir
+      size: 385663
       nfiles: 21
   fit_linear_regression:
     cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
       --output data/models/linear_regression
     deps:
-    - path: data/splited_data/catalog.csv
-      md5: c4ae24df8d45b7c932c6bfb83373ad95
-      size: 2387
+    - path: data/splited_data
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
+      nfiles: 41
     - path: pipeline/2_1_fit_linear_regression.py
       md5: f1329c82e37a77bfdd1b7c49ad610e31
       size: 1283
     outs:
     - path: data/models/linear_regression
-      md5: eb41286e983b9d1ab3e274b1fe89f9f7.dir
+      md5: 32ed97bfe0991fe7e85ad6e43fbb6eca.dir
       size: 15868
       nfiles: 21
   fit_combi:
     cmd: python pipeline/2_3_fit_combi.py --catalog data/splited_data/catalog.csv
       --output data/models/combi
     deps:
-    - path: data/splited_data/catalog.csv
-      md5: c4ae24df8d45b7c932c6bfb83373ad95
-      size: 2387
+    - path: data/splited_data
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
+      nfiles: 41
     - path: pipeline/2_3_fit_combi.py
       md5: ef2097cf5e7767aed1ddcbc044140a21
       size: 1273
     outs:
     - path: data/models/combi
-      md5: 310ddb95b560c8f29f9dafc796dd089c.dir
-      size: 18636
+      md5: b666946e9ae8cf20dd4b991ac66a621b.dir
+      size: 18691
       nfiles: 21
   fit_mia:
     cmd: python pipeline/2_4_fit_mia.py --catalog data/splited_data/catalog.csv --output
       data/models/mia
     deps:
-    - path: data/splited_data/catalog.csv
-      md5: c4ae24df8d45b7c932c6bfb83373ad95
-      size: 2387
+    - path: data/splited_data
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
+      nfiles: 41
     - path: pipeline/2_4_fit_mia.py
       md5: 3cc8d85edd6ce547319ba67f53fb85ed
       size: 1248
     outs:
     - path: data/models/mia
-      md5: e61846cabf073b9083110b5e8204d0fa.dir
-      size: 81884
+      md5: c262e1cc1400a71fdffff2f1e29cdd9a.dir
+      size: 81954
       nfiles: 21
   fit_kandos_nn:
     cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv
       --output data/models/kandos_nn
     deps:
-    - path: data/splited_data/catalog.csv
-      md5: c4ae24df8d45b7c932c6bfb83373ad95
-      size: 2387
+    - path: data/splited_data
+      md5: ffba1a2095499571c0892cda737c501d.dir
+      size: 94825460
+      nfiles: 41
     - path: pipeline/2_5_fit_kandos_nn.py
-      md5: 1b8cc1cdc3330e71635d59edc81433e1
-      size: 1263
+      md5: f910a925493703402bf21906d85e51ef
+      size: 1256
     outs:
     - path: data/models/kandos_nn
-      md5: e0bb7798971bc673056ccda54949fc71.dir
-      size: 55664
+      md5: 7952fa402194e49f4339e4ebf1fca601.dir
+      size: 57251
       nfiles: 21
+  find_metrics_distribution:
+    cmd: python pipeline/4_find_metrics_destribution.py --input data/metrics.csv --output
+      data/analysis/
+    deps:
+    - path: data/metrics.csv
+      md5: 9df6ce5f5960ddc5ed10639c3a51259d
+      size: 27931
+    - path: pipeline/4_find_metrics_destribution.py
+      md5: 2590a82dbcb073dd012aef0ff181feb8
+      size: 1612
+    outs:
+    - path: data/analysis/analysis.csv
+      md5: c0b40aca47ac55961d792295a645272b
+      size: 3992

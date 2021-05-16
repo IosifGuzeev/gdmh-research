@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Load datasets from given links and fit linear regression models')
+    parser = argparse.ArgumentParser(description='Load datasets from given links and fit SVR models')
     parser.add_argument('--catalog', type=str, help='Path to catalog with datasets information')
     parser.add_argument('--output', type=str, help="Output folder location")
     args = parser.parse_args()
