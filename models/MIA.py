@@ -53,6 +53,7 @@ class Layer(BaseEstimator, RegressorMixin):
         self.nodes = []
         self.input_dim = None
         self.output_dim = None
+        self.fit_score = None
 
     def fit(self, X, y):
         all_nodes = []
@@ -74,7 +75,10 @@ class Layer(BaseEstimator, RegressorMixin):
         return np.array([node.transform(X) for node in self.nodes]).T
 
     def __repr__(self, N_CHAR_MAX=700):
-        return f"Layer(input_dim={self.input_dim}, output_dim={self.output_dim})"
+        if self.fit_score is None:
+            return f"Layer(input_dim={self.input_dim}, output_dim={self.output_dim})"
+        else:
+            return f"Layer(input_dim={self.input_dim}, output_dim={self.output_dim}, fit_score={self.fit_score})"
 
 
 class MIA(BaseEstimator, RegressorMixin):
@@ -87,6 +91,7 @@ class MIA(BaseEstimator, RegressorMixin):
         self.layers = []
         self.linear_regressor = LinearRegression()
         self.fit_quality = None
+        self.fit_history = []
 
     def fit(self, X, y, split_data: bool = True, test_size: float = 0.2):
         if not isinstance(X, np.ndarray):
@@ -112,10 +117,12 @@ class MIA(BaseEstimator, RegressorMixin):
             elif last_layer_output.shape[1] < 2:
                 self.linear_regressor = new_linear_regressor
                 self.layers.append(new_layer)
+                self.layers[-1].fit_score = new_metric
                 break
             else:
                 self.linear_regressor = new_linear_regressor
                 self.layers.append(new_layer)
+                self.layers[-1].fit_score = new_metric
         self.fit_quality = old_metric if old_metric is not None else old_metric
         return self
 

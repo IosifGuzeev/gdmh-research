@@ -72,11 +72,13 @@ class KandosNN(BaseEstimator, RegressorMixin):
                 self.linear_regressor = new_linear_regressor
                 self.regressors.append(new_linear_regressor)
                 self.layers.append(new_layer)
+                self.layers[-1].fit_score = new_metric
                 break
             else:
                 self.linear_regressor = new_linear_regressor
                 self.regressors.append(new_linear_regressor)
                 self.layers.append(new_layer)
+                self.layers[-1].fit_score = new_metric
                 last_layer_output = self.__merge_arrays(
                     layer_output=last_layer_output,
                     prediction=new_linear_regressor.predict(last_layer_output)

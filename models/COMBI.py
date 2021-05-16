@@ -1,7 +1,8 @@
-from utility.StepwiseRegressor import StepwiseRegressor
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model import LinearRegression
 import numpy as np
+
+from utility.StepwiseRegressor import StepwiseRegressor
 
 
 class COMBI(BaseEstimator, RegressorMixin):

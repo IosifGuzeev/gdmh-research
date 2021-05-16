@@ -116,12 +116,12 @@ stages:
       size: 94579166
       nfiles: 41
     - path: pipeline/2_4_fit_mia.py
-      md5: 83df944d05104bc40db9fb15aa534653
-      size: 1234
+      md5: 00a648f88cdf248914127a8a4e179317
+      size: 1255
     outs:
     - path: data/models/mia
-      md5: a167c87a47dafc3f9e25e4ed372bab52.dir
-      size: 59477
+      md5: cbb1fc9190d08592b70f0f025be0c8a2.dir
+      size: 60341
       nfiles: 21
   fit_kandos_nn:
     cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv
