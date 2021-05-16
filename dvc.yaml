@@ -1,0 +1,67 @@
+stages:
+  generate_data:
+    cmd: python pipeline/0_data_creation.py --links https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv
+      --target-columns medv --laws simple_poly exp irrational_poly --output data/raw_data
+    deps:
+    - pipeline/0_data_creation.py
+    params:
+    - generate_data.sample_size
+    outs:
+    - data/raw_data
+  split_data:
+    cmd: python pipeline/1_split_data.py --input data/raw_data --output data/splited_data
+    deps:
+    - data/raw_data
+    - pipeline/1_split_data.py
+    params:
+    - split_data.subsets_count
+    - split_data.train_size
+    outs:
+    - data/splited_data
+  fit_linear_regression:
+    cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
+      --output data/models/linear_regression
+    deps:
+    - data/splited_data/catalog.csv
+    - pipeline/2_1_fit_linear_regression.py
+    outs:
+    - data/models/linear_regression
+  calculate_metric:
+    cmd: python pipeline/3_1_calculate_metrics.py --input data/models --output data/metrics.csv
+    deps:
+    - data/models
+    - pipeline/3_1_calculate_metrics.py
+    outs:
+    - data/metrics.csv
+  fit_svm:
+    cmd: python pipeline/2_2_fit_svm.py --catalog data/splited_data/catalog.csv --output
+      data/models/svm
+    deps:
+    - data/splited_data/catalog.csv
+    - pipeline/2_2_fit_svm.py
+    outs:
+    - data/models/svm
+  fit_combi:
+    cmd: python pipeline/2_3_fit_combi.py --catalog data/splited_data/catalog.csv --output
+      data/models/combi
+    deps:
+    - data/splited_data/catalog.csv
+    - pipeline/2_3_fit_combi.py
+    outs:
+    - data/models/combi
+  fit_mia:
+    cmd: python pipeline/2_4_fit_mia.py --catalog data/splited_data/catalog.csv --output
+      data/models/mia
+    deps:
+    - data/splited_data/catalog.csv
+    - pipeline/2_4_fit_mia.py
+    outs:
+    - data/models/mia
+  fit_kandos_nn:
+    cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv --output
+      data/models/kandos_nn
+    deps:
+    - data/splited_data/catalog.csv
+    - pipeline/2_5_fit_kandos_nn.py
+    outs:
+    - data/models/kandos_nn

@@ -1,0 +1,136 @@
+schema: '2.0'
+stages:
+  generate_data:
+    cmd: python pipeline/0_data_creation.py --links https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv
+      --target-columns medv --laws simple_poly exp irrational_poly --output data/raw_data
+    deps:
+    - path: pipeline/0_data_creation.py
+      md5: 3b6ba50db379c9de7cf14e56125495b4
+      size: 1983
+    params:
+      params.yaml:
+        generate_data.sample_size: 30000
+    outs:
+    - path: data/raw_data
+      md5: 69da3f78d96ec4bffddf97adb184ad7b.dir
+      size: 19143453
+      nfiles: 4
+  split_data:
+    cmd: python pipeline/1_split_data.py --input data/raw_data --output data/splited_data
+    deps:
+    - path: data/raw_data
+      md5: 69da3f78d96ec4bffddf97adb184ad7b.dir
+      size: 19143453
+      nfiles: 4
+    - path: pipeline/1_split_data.py
+      md5: 3a571749c9adcc1237cb1353047b864a
+      size: 1757
+    params:
+      params.yaml:
+        split_data.subsets_count: 5
+        split_data.train_size: 0.8
+    outs:
+    - path: data/splited_data
+      md5: a242e84dfdea5027b9a54411984be008.dir
+      size: 94785000
+      nfiles: 41
+  fir_linear_regression:
+    cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
+      --output data/models/linear_regression
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c7ea5943330a7c48aa6cde60854c42cd
+    - path: pipeline/2_1_fit_linear_regression.py
+      md5: ff8895a3486c6aaf4197c22eaece19cd
+    outs:
+    - path: data/models/linear_regression
+      md5: 201f8d9b114e8dad8f376b3fae1e2709.dir
+  calculate_metric:
+    cmd: python pipeline/3_1_calculate_metrics.py --input data/models --output data/metrics.csv
+    deps:
+    - path: data/models
+      md5: f190ff0d6296d7911067bf0a28b6f8a9.dir
+      size: 529689
+      nfiles: 106
+    - path: pipeline/3_1_calculate_metrics.py
+      md5: 2543769e98f4def7f8cb174668b3e8ea
+      size: 2207
+    outs:
+    - path: data/metrics.csv
+      md5: 7d345cb66f9bf16a607c5d96ea48cc74
+      size: 27891
+  fit_svm:
+    cmd: python pipeline/2_2_fit_svm.py --catalog data/splited_data/catalog.csv --output
+      data/models/svm
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c4ae24df8d45b7c932c6bfb83373ad95
+      size: 2387
+    - path: pipeline/2_2_fit_svm.py
+      md5: 9e946fa99b7843bc9766419b2e279e30
+      size: 1248
+    outs:
+    - path: data/models/svm
+      md5: ec2cc5d2a3de16564c4be62763181fe0.dir
+      size: 357585
+      nfiles: 21
+  fit_linear_regression:
+    cmd: python pipeline/2_1_fit_linear_regression.py --catalog data/splited_data/catalog.csv
+      --output data/models/linear_regression
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c4ae24df8d45b7c932c6bfb83373ad95
+      size: 2387
+    - path: pipeline/2_1_fit_linear_regression.py
+      md5: f1329c82e37a77bfdd1b7c49ad610e31
+      size: 1283
+    outs:
+    - path: data/models/linear_regression
+      md5: eb41286e983b9d1ab3e274b1fe89f9f7.dir
+      size: 15868
+      nfiles: 21
+  fit_combi:
+    cmd: python pipeline/2_3_fit_combi.py --catalog data/splited_data/catalog.csv
+      --output data/models/combi
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c4ae24df8d45b7c932c6bfb83373ad95
+      size: 2387
+    - path: pipeline/2_3_fit_combi.py
+      md5: ef2097cf5e7767aed1ddcbc044140a21
+      size: 1273
+    outs:
+    - path: data/models/combi
+      md5: 310ddb95b560c8f29f9dafc796dd089c.dir
+      size: 18636
+      nfiles: 21
+  fit_mia:
+    cmd: python pipeline/2_4_fit_mia.py --catalog data/splited_data/catalog.csv --output
+      data/models/mia
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c4ae24df8d45b7c932c6bfb83373ad95
+      size: 2387
+    - path: pipeline/2_4_fit_mia.py
+      md5: 3cc8d85edd6ce547319ba67f53fb85ed
+      size: 1248
+    outs:
+    - path: data/models/mia
+      md5: e61846cabf073b9083110b5e8204d0fa.dir
+      size: 81884
+      nfiles: 21
+  fit_kandos_nn:
+    cmd: python pipeline/2_5_fit_kandos_nn.py --catalog data/splited_data/catalog.csv
+      --output data/models/kandos_nn
+    deps:
+    - path: data/splited_data/catalog.csv
+      md5: c4ae24df8d45b7c932c6bfb83373ad95
+      size: 2387
+    - path: pipeline/2_5_fit_kandos_nn.py
+      md5: 1b8cc1cdc3330e71635d59edc81433e1
+      size: 1263
+    outs:
+    - path: data/models/kandos_nn
+      md5: e0bb7798971bc673056ccda54949fc71.dir
+      size: 55664
+      nfiles: 21
