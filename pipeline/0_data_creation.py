@@ -34,7 +34,7 @@ def main():
 
     for link, target_column in zip(args.links, args.target_columns):
         data = pd.read_csv(link)
-        data = data[(data['price'] < 1_250_000) & (data['price'] > 100_000)]
+        # data = data[(data['price'] < 1_250_000) & (data['price'] > 100_000)]
         data = data.drop(columns=["zipcode", "id", "date"])
         dataset_name = link.split("/")[-1]
         data['Y'] = data[target_column].copy()

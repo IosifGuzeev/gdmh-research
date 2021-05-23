@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_absolute_error
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
@@ -13,7 +13,7 @@ class StepwiseRegressor(BaseEstimator, RegressorMixin):
         self.expected_columns_count = None
 
     def fit(self, X, y, split_data=False):
-        eps = 0.005
+        eps = 0.01
         available_columns = list(range(X.shape[1]))
         self.expected_columns_count = X.shape[1]
         if split_data:

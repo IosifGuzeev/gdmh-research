@@ -39,8 +39,8 @@ def main():
             })
         result = pd.DataFrame(result)
         result = pd.concat((catalog, result), axis=1)
-        result['model_name'] = result['model_path'].apply(lambda s: s.split('/')[-2])
-        result['dataset_name'] = result['initial_data'].apply(lambda s: s.split('/')[-1])
+        result['model_name'] = result['model_path'].apply(lambda s: s.split('\\')[-2])
+        result['dataset_name'] = result['initial_data'].apply(lambda s: s.split('\\')[-1])
 
         if global_result is None:
             global_result = result.copy()

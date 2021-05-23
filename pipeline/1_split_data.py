@@ -42,25 +42,22 @@ def main():
     for data_path in Path(args.input).glob("*.csv"):
         data = pd.read_csv(data_path)
         if 'kc_house' in str(data_path.name):
-            kf = KFold(n_splits=int(subsets_count / 2), random_state=42, shuffle=True)
+            kf = KFold(n_splits=int(subsets_count * 2), random_state=42, shuffle=True)
         else:
             kf = KFold(n_splits=int(subsets_count), random_state=42, shuffle=True)
         i = 0
         for train_index, test_index in kf.split(data):
             train, test = data.iloc[train_index], data.iloc[test_index]
             if 'kc_house' in str(data_path.name):
-                y_train = train['Y'].values
-                y_test = test['Y'].values
-                train = train.drop(columns=['Y'])
-                test = test.drop(columns=['Y'])
                 scaler = MinMaxScaler().fit(train)
-                columns = test.columns
-                train = scaler.transform(train)
-                test = scaler.transform(test)
-                train = pd.DataFrame(data=train, columns=columns)
-                train['Y'] = y_train
-                test = pd.DataFrame(data=test, columns=columns)
-                test['Y'] = y_test
+                train = pd.DataFrame(
+                    data=scaler.transform(train),
+                    columns=train.columns
+                )
+                test = pd.DataFrame(
+                    data=scaler.transform(test),
+                    columns=test.columns
+                )
             data_desc = {
                 "initial_data": data_path,
                 "train_path": output / f"{data_path.name[:-4]}_{i}_train.csv",

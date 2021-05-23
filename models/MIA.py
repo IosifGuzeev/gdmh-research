@@ -5,6 +5,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import mean_absolute_error
 import numpy as np
 
 from utility.StepwiseRegressor import StepwiseRegressor
@@ -104,7 +105,7 @@ class MIA(BaseEstimator, RegressorMixin):
         else:
             X_train, X_test, y_train, y_test = X, X, y, y
 
-        eps = - 0.01
+        eps = -0.005
         new_metric = None
         last_layer_output = X_train
         last_layer_output_test = X_test

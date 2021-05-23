@@ -33,8 +33,8 @@ def main():
             with open(row.model_path, 'rb') as f:
                 model = pickle.load(f)
             model_stats = {
-                "model_name": row.model_path.split('/')[-2],
-                "dataset_name": row.initial_data.split('/')[-1]
+                "model_name": row.model_path.split('\\')[-2],
+                "dataset_name": row.initial_data.split('\\')[-1]
             }
             for i, layer in enumerate(model.layers):
                 model_stats[f"layer_{i}_nodes_count"] = layer.output_dim
