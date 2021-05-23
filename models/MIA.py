@@ -1,4 +1,5 @@
 from itertools import combinations
+import timeit
 
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model import LinearRegression
@@ -92,8 +93,10 @@ class MIA(BaseEstimator, RegressorMixin):
         self.linear_regressor = LinearRegression()
         self.fit_quality = None
         self.fit_history = []
+        self.fit_time = 0
 
-    def fit(self, X, y, split_data: bool = True, test_size: float = 0.2):
+    def fit(self, X, y, split_data: bool = False, test_size: float = 0.2):
+        start = timeit.timeit()
         if not isinstance(X, np.ndarray):
             X = np.array(X)
         if split_data:
@@ -101,7 +104,7 @@ class MIA(BaseEstimator, RegressorMixin):
         else:
             X_train, X_test, y_train, y_test = X, X, y, y
 
-        eps = 0.01
+        eps = - 0.01
         new_metric = None
         last_layer_output = X_train
         last_layer_output_test = X_test
@@ -124,6 +127,8 @@ class MIA(BaseEstimator, RegressorMixin):
                 self.layers.append(new_layer)
                 self.layers[-1].fit_score = new_metric
         self.fit_quality = old_metric if old_metric is not None else old_metric
+        end = timeit.timeit()
+        self.fit_time = end - start
         return self
 
     def transform(self, X):

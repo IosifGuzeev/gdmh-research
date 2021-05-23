@@ -1,7 +1,7 @@
 stages:
   generate_data:
-    cmd: python pipeline/0_data_creation.py --links https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv
-      --target-columns medv --laws simple_poly exp irrational_poly --output data/raw_data
+    cmd: python pipeline/0_data_creation.py --links data/datasets/kc_house_data.csv
+      --target-columns price --output data/raw_data
     deps:
     - pipeline/0_data_creation.py
     params:
@@ -26,6 +26,14 @@ stages:
     - pipeline/2_1_fit_linear_regression.py
     outs:
     - data/models/linear_regression
+  fit_regression_tree:
+    cmd: python pipeline/2_6_fit_regression_tree.py --catalog data/splited_data/catalog.csv
+      --output data/models/regression_tree
+    deps:
+    - data/splited_data
+    - pipeline/2_6_fit_regression_tree.py
+    outs:
+    - data/models/regression_tree
   calculate_metric:
     cmd: python pipeline/3_1_calculate_metrics.py --input data/models --output data/metrics.csv
     deps:
@@ -33,6 +41,13 @@ stages:
     - pipeline/3_1_calculate_metrics.py
     outs:
     - data/metrics.csv
+  calculate_gmdh_complexity:
+    cmd: python pipeline/3_2_calculate_gmdh_complexity.py --input data/models --output data/gmdh_train_stats.csv
+    deps:
+    - data/models
+    - pipeline/3_2_calculate_gmdh_complexity.py
+    outs:
+    - data/gmdh_train_stats.csv
   fit_svm:
     cmd: python pipeline/2_2_fit_svm.py --catalog data/splited_data/catalog.csv --output
       data/models/svm
@@ -46,6 +61,7 @@ stages:
       --output data/models/combi
     deps:
     - data/splited_data
+    - models/COMBI.py
     - pipeline/2_3_fit_combi.py
     outs:
     - data/models/combi
@@ -54,6 +70,7 @@ stages:
       data/models/mia
     deps:
     - data/splited_data
+    - models/MIA.py
     - pipeline/2_4_fit_mia.py
     outs:
     - data/models/mia
@@ -62,29 +79,33 @@ stages:
       --output data/models/kandos_nn
     deps:
     - data/splited_data
+    - models/KandosNN.py
     - pipeline/2_5_fit_kandos_nn.py
     outs:
     - data/models/kandos_nn
   find_metrics_distribution:
-    cmd: python pipeline/4_find_metrics_destribution.py --input data/metrics.csv --output
+    cmd: python pipeline/5_find_metrics_destribution.py --input data/metrics.csv --output
       data/analysis/
     deps:
     - data/metrics.csv
-    - pipeline/4_find_metrics_destribution.py
+    - pipeline/5_find_metrics_destribution.py
     outs:
     - data/analysis/analysis.csv
   find_statistics:
-    cmd: python pipeline/4_2_check_statistics.py --input data/metrics.csv --output data/analysis
+    cmd: python pipeline/4_check_statistics.py --metrics data/metrics.csv --analysis data/analysis/analysis.csv
+      --output data/analysis
     deps:
     - data/metrics.csv
-    - pipeline/4_2_check_statistics.py
+    - pipeline/4_check_statistics.py
+    - data/analysis/analysis.csv
     outs:
     - data/analysis/statistics.csv
   build_charts:
-    cmd: python pipeline/5_create_charts.py --input data/analysis/analysis.csv --output
+    cmd: python pipeline/6_create_charts.py --input data/analysis/analysis.csv --output
       data/analysis/charts
     deps:
     - data/analysis/analysis.csv
-    - pipeline/5_create_charts.py
+    - pipeline/6_create_charts.py
+    - utility/charts.py
     outs:
     - data/analysis/charts

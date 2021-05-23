@@ -1,3 +1,5 @@
+import timeit
+
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.base import BaseEstimator, RegressorMixin
@@ -42,8 +44,10 @@ class KandosNN(BaseEstimator, RegressorMixin):
         self.regressors = []
         self.linear_regressor = LinearRegression()
         self.fit_quality = None
+        self.fit_time = 0
 
     def fit(self, X, y, split_data: bool = True, test_size: float = 0.2):
+        start = timeit.timeit()
         if not isinstance(X, np.ndarray):
             X = np.array(X)
         if split_data:
@@ -88,6 +92,8 @@ class KandosNN(BaseEstimator, RegressorMixin):
                     prediction=new_linear_regressor.predict(last_layer_output_test)
                 )
         self.fit_quality = old_metric if old_metric is not None else old_metric
+        end = timeit.timeit()
+        self.fit_time = end - start
         return self
 
     def transform(self, X):

@@ -12,7 +12,8 @@ class StepwiseRegressor(BaseEstimator, RegressorMixin):
         self.best_indexes = None
         self.expected_columns_count = None
 
-    def fit(self, X, y, split_data=True):
+    def fit(self, X, y, split_data=False):
+        eps = 0.005
         available_columns = list(range(X.shape[1]))
         self.expected_columns_count = X.shape[1]
         if split_data:
@@ -27,7 +28,7 @@ class StepwiseRegressor(BaseEstimator, RegressorMixin):
             for index in available_columns:
                 accuracy = (LinearRegression().fit(X_train[:, [index] + locked_columns], y_train)
                                               .score(X_test[:, [index] + locked_columns], y_test))
-                if accuracy > best_accuracy + 0.01:
+                if accuracy > best_accuracy + eps:
                     best_accuracy = accuracy
                     best_index = index
 

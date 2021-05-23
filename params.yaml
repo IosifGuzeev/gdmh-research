@@ -1,6 +1,8 @@
+base_seed: 1024
+
 generate_data:
-  sample_size: 30000
+  sample_size: 100000
 
 split_data:
-  subsets_count: 5
+  subsets_count: 20
   train_size: 0.8
